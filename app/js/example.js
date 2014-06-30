@@ -91,8 +91,7 @@ app.directive('numeric', ['dateParser','_', 'moment', function(dateParser, _, mo
                     scope.dt = undefined;
                     return;
                 }
-                //Slicing only the date component of DateTime
-                if(!scope.dt || parsed.toString().slice(0,15) !== scope.dt.toString().slice(0,15)){
+                if(!scope.dt || !moment(parsed).isSame(moment(scope.dt), 'day')){
                     scope.dt = parsed;
                     ngModelCtrl.$setViewValue(parsed);
                     ngModelCtrl.$render();
