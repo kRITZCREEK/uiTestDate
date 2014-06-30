@@ -102,13 +102,13 @@ app.directive('numeric', ['dateParser','_', 'moment', function(dateParser, _, mo
 
 
             function numerical(idc) {
-                console.log(idc);
+                /*console.log(idc);
                 if(idc instanceof Date){
                     element.val(moment(idc).format("DDMMYYYY"));
                     return;
-                }
+                }*/
                 var text = element.val();
-                var clean = text.replace( /[^0-9]+ | \./g, '');
+                var clean = text.replace( /[^0-9|\.]+/g, '');
                 if (text !== clean) {
                     element.val(clean);
                 }
