@@ -10,6 +10,7 @@ app.controller('DatepickerDemoCtrl', function ($scope, dateParser, _) {
     $scope.today = function() {
         $scope.dt = new Date();
     };
+    $scope.today();
     var test = function(a,b){
       return a+b;
     };
@@ -44,11 +45,13 @@ app.controller('DatepickerDemoCtrl', function ($scope, dateParser, _) {
     $scope.format = 'ddMMyy';
 });
 
-app.directive('numeric', ['dateParser','_', 'moment', function(dateParser, _, moment) {
+app.directive('enhancedDate', ['dateParser','_', 'moment', function(dateParser, _, moment) {
     return {
+        restrict: "A",
         require: 'ngModel',
         //moment.js _.js ngmodelcontroller
         link: function (scope, element, attr, ngModelCtrl) {
+            console.log(attr);
             var modelDate = attr.ngModel;
             var isOpen = attr.isOpen;
             var formats = ['DDMMYY', 'DDMMYYYY', 'DD.MM.YY', 'DD.MM.YYYY'];
@@ -88,7 +91,8 @@ app.directive('numeric', ['dateParser','_', 'moment', function(dateParser, _, mo
             };
 
             function fromUser(input) {
-                console.log(attr);
+                console.log(attr.ngModel + " Model")
+                console.log(modelDate + " ModelinDirective")
                 var text = element.val();
                 var parsed = parse(parsers, text);
                 if(input instanceof Date){
@@ -119,21 +123,29 @@ app.directive('numeric', ['dateParser','_', 'moment', function(dateParser, _, mo
                 }
                 return clean;
             }
+
+            element.on('click', function () {
+                scope.opened = false;
+                this.select();
+            });
             ngModelCtrl.$parsers.push(numerical);
             ngModelCtrl.$parsers.push(fromUser);
         }
     };
 }]);
 
-
-app.directive('selectOnClick', function () {
+app.directive('coupledDate', ['_', 'moment', function(_, moment){
     return {
         restrict: 'A',
-        link: function (scope, element, attrs) {
-            element.on('click', function () {
-                scope.opened = false;
-                this.select();
-            });
+        require: 'ngModel',
+        link: function(scope, element, attr, ngModelCtrl){
+             var modelDate = attr.ngModel;
+             scope.$watch(attr.von, function(newValue, oldValue, scope) {
+                var future = moment(newValue).add('d', Number(attr.difference)).toDate();
+                ngModelCtrl.$setViewValue(future);
+                ngModelCtrl.$render();
+             });
+             //ngModelCtrl.$setViewValue(moment(von).add('d', Number(difference)).toDate());
         }
     };
-});
+}]);
