@@ -49,6 +49,8 @@ app.directive('numeric', ['dateParser','_', 'moment', function(dateParser, _, mo
         require: 'ngModel',
         //moment.js _.js ngmodelcontroller
         link: function (scope, element, attr, ngModelCtrl) {
+            var modelDate = attr.ngModel;
+            var isOpen = attr.isOpen;
             var formats = ['DDMMYY', 'DDMMYYYY', 'DD.MM.YY', 'DD.MM.YYYY'];
             var parsers = [
                 function(text){
@@ -86,25 +88,27 @@ app.directive('numeric', ['dateParser','_', 'moment', function(dateParser, _, mo
             };
 
             function fromUser(input) {
+                console.log(attr);
                 var text = element.val();
                 var parsed = parse(parsers, text);
                 if(input instanceof Date){
                     parsed = input;
                 }
                 if(!parsed){
-                    scope.dt = undefined;
+                    modelDate = undefined;
                     return;
                 }
-                if(!scope.dt || !moment(parsed).isSame(moment(scope.dt), 'day')){
-                    scope.dt = parsed;
+                if(!modelDate || !moment(parsed).isSame(moment(modelDate), 'day')){
+                    modelDate = parsed;
                     ngModelCtrl.$setViewValue(parsed);
                     ngModelCtrl.$render();
                 }
-                return scope.dt;
+                return modelDate;
             }
 
 
             function numerical(input) {
+                //TODO: Couple isOpen and scope.opened properly
                 if(input instanceof Date && scope.opened){
                     return input;
                 }
