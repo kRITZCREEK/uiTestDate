@@ -76,6 +76,7 @@ app.directive('numeric', ['dateParser','_', 'moment', function(dateParser, _, mo
                         return dateParser.parse(text.slice(0,-1).concat(new Date().getFullYear()), 'ddMMyyyy');
                 }
             ];
+
             var parse = function(parsers, text){
                 //return _.find(parsers, function(parser){return parser(text);})
                 for(var i = 0; i < parsers.length; i++){
@@ -84,9 +85,12 @@ app.directive('numeric', ['dateParser','_', 'moment', function(dateParser, _, mo
                 }
             };
 
-            function fromUser() {
+            function fromUser(input) {
                 var text = element.val();
                 var parsed = parse(parsers, text);
+                if(input instanceof Date){
+                    parsed = input;
+                }
                 if(!parsed){
                     scope.dt = undefined;
                     return;
@@ -100,12 +104,10 @@ app.directive('numeric', ['dateParser','_', 'moment', function(dateParser, _, mo
             }
 
 
-            function numerical(idc) {
-                /*console.log(idc);
-                if(idc instanceof Date){
-                    element.val(moment(idc).format("DDMMYYYY"));
-                    return;
-                }*/
+            function numerical(input) {
+                if(input instanceof Date && scope.opened){
+                    return input;
+                }
                 var text = element.val();
                 var clean = text.replace( /[^0-9|\.]+/g, '');
                 if (text !== clean) {
@@ -125,6 +127,7 @@ app.directive('selectOnClick', function () {
         restrict: 'A',
         link: function (scope, element, attrs) {
             element.on('click', function () {
+                scope.opened = false;
                 this.select();
             });
         }
