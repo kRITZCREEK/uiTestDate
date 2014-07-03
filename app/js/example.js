@@ -119,7 +119,6 @@ app.directive('enhancedDate', ['dateParser', '_', 'moment', '$parse',
 
 
                 function numerical(input) {
-                    //TODO: Couple isOpen and scope.opened properly
                     if (input instanceof Date && scope.$eval(attr.isOpen)) {
                         return input;
                     }
@@ -154,6 +153,16 @@ app.directive('coupledDate', ['_', 'moment', '$parse',
                     $parse(attr.ngModel).assign(scope, future);
                     //ngModelCtrl.$setViewValue(future);
                     //ngModelCtrl.$render();
+                });
+                //Validation Part:
+                element.on('blur', function (event) {
+                    scope.$apply(function () {
+                        var from = moment(scope.$eval(attr.von));
+                        var till = moment(scope.$eval(attr.ngModel));
+                        //TODO: How does Validation work on HTML side?
+                        //ngModelCtrl.$setValidity('coupledDate', from.isBefore(till));
+                        from.isBefore(till) ? console.log("Valid") : console.log("Invalid");
+                    });
                 });
                 //ngModelCtrl.$setViewValue(moment(von).add('d', Number(difference)).toDate());
             }
