@@ -47,17 +47,17 @@ app.controller('DatepickerDemoCtrl', function ($scope, dateParser, _) {
         startingDay: 1
     };
 
-    $scope.initDate = new Date('2016-15-20');
-    $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-    $scope.format = 'ddMMyy';
+    $scope.format = 'dd.MM.yyyy';
 });
 
 app.directive('enhancedDate', ['dateParser', '_', 'moment', '$parse',
     function (dateParser, _, moment, $parse) {
         return {
-            restrict: "A",
+            restrict: "AE",
             require: 'ngModel',
-            //moment.js _.js ngmodelcontroller
+            templateUrl: './js/enhancedDatePicker.html',
+            replace: true,
+            transclude: true,
             link: function (scope, element, attr, ngModelCtrl) {
                 var isOpen = attr.isOpen;
                 var formats = ['DDMMYY', 'DDMMYYYY', 'DD.MM.YY', 'DD.MM.YYYY'];
@@ -66,18 +66,6 @@ app.directive('enhancedDate', ['dateParser', '_', 'moment', '$parse',
                     function (text) {
                         return moment(text, formats, true).isValid() ? moment(text, formats, true).toDate() : undefined;
                     },
-                    /*function(text){
-                    return dateParser.parse(text, 'ddMMyy');
-                },
-                function(text){
-                    return dateParser.parse(text, 'ddMMyyyy');
-                },
-                function(text){
-                    return dateParser.parse(text, 'dd.MM.yy');
-                },
-                function(text){
-                    return dateParser.parse(text, 'dd.MM.yyyy');
-                },*/
                     //Matches . -> today
                     function (text) {
                         if (text === ".") return new Date();
@@ -90,7 +78,6 @@ app.directive('enhancedDate', ['dateParser', '_', 'moment', '$parse',
                 ];
 
                 var parse = function (parsers, text) {
-                    //return _.find(parsers, function(parser){return parser(text);})
                     for (var i = 0; i < parsers.length; i++) {
                         var parsed = parsers[i](text);
                         if (parsed) return parsed;
@@ -98,7 +85,6 @@ app.directive('enhancedDate', ['dateParser', '_', 'moment', '$parse',
                 };
 
                 function fromUser(input) {
-                    console.log(scope.$eval(attr.ngModel) + "EVAL")
                     var text = element.val();
                     var parsed = parse(parsers, text);
                     if (input instanceof Date) {
@@ -109,7 +95,6 @@ app.directive('enhancedDate', ['dateParser', '_', 'moment', '$parse',
                         return;
                     }
                     if (!scope.$eval(attr.ngModel) || !moment(parsed).isSame(moment(scope.$eval(attr.ngModel)), 'day')) {
-                        console.log(parsed instanceof Date);
                         $parse(attr.ngModel).assign(scope, parsed);
                         ngModelCtrl.$setViewValue(parsed);
                         ngModelCtrl.$render();
@@ -148,11 +133,8 @@ app.directive('coupledDate', ['_', 'moment', '$parse',
             require: 'ngModel',
             link: function (scope, element, attr, ngModelCtrl) {
                 scope.$watch(attr.von, function (newValue, oldValue, scope) {
-                    console.log('oldValue: ' + oldValue + 'newValue: ' + newValue)
                     var future = moment(newValue).add('d', Number(attr.difference)).toDate();
                     $parse(attr.ngModel).assign(scope, future);
-                    //ngModelCtrl.$setViewValue(future);
-                    //ngModelCtrl.$render();
                 });
                 //Validation Part:
                 element.on('blur', function (event) {
@@ -160,11 +142,9 @@ app.directive('coupledDate', ['_', 'moment', '$parse',
                         var from = moment(scope.$eval(attr.von));
                         var till = moment(scope.$eval(attr.ngModel));
                         //TODO: How does Validation work on HTML side?
-                        //ngModelCtrl.$setValidity('coupledDate', from.isBefore(till));
                         from.isBefore(till) ? console.log("Valid") : console.log("Invalid");
                     });
                 });
-                //ngModelCtrl.$setViewValue(moment(von).add('d', Number(difference)).toDate());
             }
         };
     }

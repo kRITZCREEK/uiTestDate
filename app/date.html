@@ -23,14 +23,16 @@
     <div class="row">
       <div class="col-md-6">
           <p class="input-group">
-              <input type="text" name="date-from"class="form-control" datepicker-popup="{{format}}" ng-model="dt" is-open="opened" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" enhanced-date />
+            <!-- <input type="text" name="date-from" class="form-control" datepicker-popup="{{format}}" ng-model="dt" is-open="opened" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" enhanced-date /> -->
+            <enhanced-date ng-model="dt" is-open="opened"></enhanced-date>
               <span class="input-group-btn">
                 <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
               </span>
               <input type="text" class="form-control" value="{{dt | date:'dd.MM.yyyy'}}"/>
             </p>
             <p class="input-group">
-              <input type="text" name="date-to" class="form-control" datepicker-popup="{{format}}" ng-model="dtbis" is-open="opened2" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" enhanced-date von="dt" difference="10" coupled-date/>
+              <enhanced-date ng-model="dtbis" is-open="opened2" von="dt" difference="10" coupled-date></enhanced-date>
+              <!-- <input type="text" name="date-to" class="form-control" datepicker-popup="{{format}}" ng-model="dtbis" is-open="opened2" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" enhanced-date von="dt" difference="10" coupled-date/> -->
               <span class="input-group-btn">
                 <button type="button" class="btn btn-default" ng-click="open2($event)"><i class="glyphicon glyphicon-calendar"></i></button>
               </span>
