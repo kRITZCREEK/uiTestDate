@@ -49,15 +49,71 @@ app.controller('DatepickerDemoCtrl', function ($scope, dateParser, _) {
 
     $scope.format = 'dd.MM.yyyy';
 });
+app.directive('enhancedDate', [
 
-app.directive('enhancedDate', ['dateParser', '_', 'moment', '$parse',
+    function () {
+        return {
+            scope: {
+                model: '=',
+            },
+            restrict: 'E', // E = Element, A = Attribute, C = Class, M = Comment
+            templateUrl: './js/enhancedDate.html',
+            replace: true,
+            link: function ($scope, iElm, iAttrs, controller) {
+                $scope.model2 = $scope.model + "_popup";
+            }
+        };
+    }
+]);
+app.directive('enhancedDateCoupled', [
+
+    function () {
+        return {
+            scope: {
+                model: '=',
+                dateFrom: '=',
+                difference: '='
+            },
+            restrict: 'E', // E = Element, A = Attribute, C = Class, M = Comment
+            templateUrl: './js/enhancedDateCoupled.html',
+            replace: true,
+            link: function ($scope, iElm, iAttrs, controller) {
+                console.log($scope.dateFrom);
+                $scope.model2 = $scope.model + "_popup";
+            }
+        };
+    }
+]);
+app.directive('popUpButton', ['$parse',
+    function ($parse) {
+        return {
+            restrict: 'A',
+            templateUrl: 'js/popUpButton.html',
+            replace: true,
+            link: function (scope, element, attr) {
+                element.on('click', function ($event) {
+                    scope.$apply(function () {
+                        console.log("HEllo" + $event);
+                        $event.preventDefault();
+                        $event.stopPropagation();
+                        $parse(attr.click).assign(scope, true);
+                    });
+                });
+            }
+        };
+    }
+]);
+app.directive('enhancedDatePicker', ['dateParser', '_', 'moment', '$parse',
     function (dateParser, _, moment, $parse) {
         return {
             restrict: "AE",
             require: 'ngModel',
             templateUrl: './js/enhancedDatePicker.html',
+            // scope: {
+            //     open: '@',
+            //     model: '@'
+            // },
             replace: true,
-            transclude: true,
             link: function (scope, element, attr, ngModelCtrl) {
                 var isOpen = attr.isOpen;
                 var formats = ['DDMMYY', 'DDMMYYYY', 'DD.MM.YY', 'DD.MM.YYYY'];
@@ -132,14 +188,15 @@ app.directive('coupledDate', ['_', 'moment', '$parse',
             restrict: 'A',
             require: 'ngModel',
             link: function (scope, element, attr, ngModelCtrl) {
-                scope.$watch(attr.von, function (newValue, oldValue, scope) {
+                scope.$watch(attr.dateFrom, function (newValue, oldValue, scope) {
                     var future = moment(newValue).add('d', Number(attr.difference)).toDate();
                     $parse(attr.ngModel).assign(scope, future);
+                    console.log("ChangePLOX");
                 });
                 //Validation Part:
                 element.on('blur', function (event) {
                     scope.$apply(function () {
-                        var from = moment(scope.$eval(attr.von));
+                        var from = moment(scope.$eval(attr.dateFrom));
                         var till = moment(scope.$eval(attr.ngModel));
                         //TODO: How does Validation work on HTML side?
                         from.isBefore(till) ? console.log("Valid") : console.log("Invalid");

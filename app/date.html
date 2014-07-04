@@ -23,18 +23,19 @@
     <div class="row">
       <div class="col-md-6">
           <p class="input-group">
-            <!-- <input type="text" name="date-from" class="form-control" datepicker-popup="{{format}}" ng-model="dt" is-open="opened" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" enhanced-date /> -->
-            <enhanced-date ng-model="dt" is-open="opened"></enhanced-date>
+              <!-- <enhanced-date model="dt"></enhanced-date> -->
+              <enhanced-date-picker ng-model="dt" is-open="popupFrom"></enhanced-date-picker>
               <span class="input-group-btn">
-                <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                <button pop-up-button click="popupFrom"></button>
               </span>
               <input type="text" class="form-control" value="{{dt | date:'dd.MM.yyyy'}}"/>
             </p>
+            </p>
             <p class="input-group">
-              <enhanced-date ng-model="dtbis" is-open="opened2" von="dt" difference="10" coupled-date></enhanced-date>
-              <!-- <input type="text" name="date-to" class="form-control" datepicker-popup="{{format}}" ng-model="dtbis" is-open="opened2" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" enhanced-date von="dt" difference="10" coupled-date/> -->
+              <!-- <enhanced-date-coupled model="dtbis" date-from="dt" difference="12"><enhanced-date-coupled> -->
+              <enhanced-date-picker ng-model="dtbis" is-open="popupTill" date-from="dt" difference="10" coupled-date></enhanced-date-picker>
               <span class="input-group-btn">
-                <button type="button" class="btn btn-default" ng-click="open2($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                <button pop-up-button click="popupTill"></button>
               </span>
               <input type="text" class="form-control" value="{{dtbis | date:'dd.MM.yyyy'}}"/>
             </p>
