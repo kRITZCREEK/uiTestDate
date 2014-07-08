@@ -49,6 +49,7 @@ app.controller('DatepickerDemoCtrl', function ($scope, dateParser, _) {
 
     $scope.format = 'dd.MM.yyyy';
 });
+
 app.directive('enhancedDate', [
 
     function () {
